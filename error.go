@@ -1,9 +1,9 @@
 package jsonseal
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -68,24 +68,25 @@ func (errs *Errors) String() string {
 // uses a json.encode
 func JSONFormat(e error) string {
 	// writing a custom json encoder
-	encoder := json.NewEncoder(os.Stdout)
+	var buffer bytes.Buffer
+	encoder := json.NewEncoder(&buffer)
 	encoder.SetEscapeHTML(false)
 
-	var errContent []byte
 	err := encoder.Encode(e)
-	os.Stdout.Write(errContent)
 
 	if err != nil {
-		errContent, _ = json.Marshal(&Errors{
+		errContent, _ := json.Marshal(&Errors{
 			Errs: []Error{
 				{
 					Err: err,
 				},
 			},
 		})
+
+		return string(errContent)
 	}
 
-	return string(errContent)
+	return buffer.String()
 }
 
 func JSONIndentFormat(e error, prefix string, indent string) string {
