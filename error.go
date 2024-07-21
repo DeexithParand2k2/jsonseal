@@ -3,7 +3,6 @@ package jsonseal
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -50,31 +49,8 @@ func (errs *Errors) String() string {
 	return errs.Error()
 }
 
-// func JSONFormat(e error) string {
-// 	errContent, err := json.Marshal(e)
-// 	if err != nil {
-// 		errContent, _ = json.Marshal(&Errors{
-// 			Errs: []Error{
-// 				{
-// 					Err: err,
-// 				},
-// 			},
-// 		})
-// 	}
-
-// 	return string(errContent)
-// }
-
-// uses a json.encode
 func JSONFormat(e error) string {
-	// writing a custom json encoder
-	encoder := json.NewEncoder(os.Stdout)
-	encoder.SetEscapeHTML(false)
-
-	var errContent []byte
-	err := encoder.Encode(e)
-	os.Stdout.Write(errContent)
-
+	errContent, err := json.Marshal(e)
 	if err != nil {
 		errContent, _ = json.Marshal(&Errors{
 			Errs: []Error{
@@ -87,6 +63,29 @@ func JSONFormat(e error) string {
 
 	return string(errContent)
 }
+
+// uses a json.encode
+// func JSONFormat(e error) string {
+// 	// writing a custom json encoder
+// 	encoder := json.NewEncoder(os.Stdout)
+// 	encoder.SetEscapeHTML(false)
+
+// 	var errContent []byte
+// 	err := encoder.Encode(e)
+// 	os.Stdout.Write(errContent)
+
+// 	if err != nil {
+// 		errContent, _ = json.Marshal(&Errors{
+// 			Errs: []Error{
+// 				{
+// 					Err: err,
+// 				},
+// 			},
+// 		})
+// 	}
+
+// 	return string(errContent)
+// }
 
 func JSONIndentFormat(e error, prefix string, indent string) string {
 	errContent, err := json.MarshalIndent(e, prefix, indent)
