@@ -86,7 +86,11 @@ func JSONFormat(e error) string {
 		return string(errContent)
 	}
 
-	return buffer.String()
+	// Remove the trailing newline character
+	result := buffer.String()
+	result = strings.TrimSuffix(result, "\n")
+
+	return result
 }
 
 func JSONIndentFormat(e error, prefix string, indent string) string {
